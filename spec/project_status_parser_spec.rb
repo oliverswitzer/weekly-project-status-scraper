@@ -12,13 +12,11 @@ describe ProjectStatusParser do
 
     describe 'when given a file path' do
       it 'reads that file with row separation on \r and \n' do
-        expect(CSV).to receive(:read).with(a_kind_of(String), row_sep: '\r\n')
+        expect(CSV).to receive(:read).with(a_kind_of(String), row_sep: "\r\n")
         subject.parse_from_file('some file path')
       end
 
       describe 'when NYC Project Status file' do
-
-
         it 'returns an hash project information for all active projects' do
           expect(subject.parse_from_file('some file path')).to include({
             project_name: 'Foo Project',

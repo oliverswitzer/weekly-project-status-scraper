@@ -4,7 +4,7 @@ class ProjectStatusParser
   def parse_from_file(file_path)
     projects = []
 
-    rows = CSV.read(file_path, row_sep: '\r\n')
+    rows = CSV.read(file_path, row_sep: "\r\n")
     rows.each_with_index do |row, i|
       next if i == 0 || row[0].nil?
 

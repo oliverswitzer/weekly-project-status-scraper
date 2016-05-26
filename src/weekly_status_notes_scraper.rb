@@ -1,41 +1,29 @@
 require 'fileutils'
 require 'csv'
+require 'pry'
 require_relative 'google_drive_service'
+require_relative 'project_status_parser'
 
 class WeeklyStatusNotesScraper
-  attr_accessor :google_drive_service
+  attr_accessor :google_drive_service, :project_status_parser
 
-  def initialize(google_drive_service)
+  def initialize(google_drive_service=nil, project_status_parser=nil)
     @google_drive_service = google_drive_service || GoogleDriveService.new
-    # @project_status_parser = project_status_parser || ProjectStatusParser.new
+    @project_status_parser = project_status_parser || ProjectStatusParser.new
   end
 
   def get_projects
-    projects = []
+    response = google_drive_service.list_files(q: "name contains 'NYC Project Status'")
 
-    response = google_drive_service.list_files(page_size: 1000, fields: 'nextPageToken, files')
-    puts 'No files found' if response.files.empty?
+    puts 'Weekly status notes not found' if response.files.empty?
 
-    response.files.each do |file|
-      next unless file.name == 'NYC Project Status'
+    google_drive_service.export_file(
+      response.files.first.id, 'text/csv', download_dest: get_weekly_status_notes_csv_path
+    )
+    project_status_parser.parse_from_file(get_weekly_status_notes_csv_path)
+  end
 
-      File.delete('../tmp/this_is_a_test.csv') if File.exist?('../tmp/this_is_a_test.csv')
-
-      google_drive_service.export_file(file.id, 'text/csv', download_dest: '../tmp/this_is_a_test.csv')
-
-      rows = CSV.read('../tmp/this_is_a_test.csv', :row_sep => "\r\n")
-
-      rows.each_with_index do |row, i|
-        next if i == 0 || row[0].nil?
-
-        projects.push({
-          project_name: row[0],
-          next_milestone: row[4],
-          summary: row[9]
-        })
-      end
-    end
-
-    return projects
+  def get_weekly_status_notes_csv_path
+    File.expand_path('../../', __FILE__) + '/tmp/weekly_status_notes.csv'
   end
 end

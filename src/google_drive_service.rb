@@ -5,11 +5,8 @@ require 'googleauth/stores/file_token_store'
 class GoogleDriveService
   OOB_URI = 'urn:ietf:wg:oauth:2.0:oob'
   APPLICATION_NAME = 'Drive API Ruby Quickstart'
-  CLIENT_SECRETS_PATH = '../client_secret.json'
-
-
-  CREDENTIALS_PATH = File.join(Dir.home, '.credentials',
-    "drive-ruby-quickstart.yaml")
+  CLIENT_SECRETS_PATH = File.join(Dir.home, '.credentials', 'client_secret.json')
+  CREDENTIALS_PATH = File.join(Dir.home, '.credentials', 'drive-ruby-quickstart.yaml')
   SCOPE = Google::Apis::DriveV3::AUTH_DRIVE_READONLY
 
   def initialize
@@ -45,8 +42,7 @@ class GoogleDriveService
     if credentials.nil?
       url = authorizer.get_authorization_url(
         base_url: OOB_URI)
-      puts "Open the following URL in the browser and enter the " +
-        "resulting code after authorization"
+      puts 'Open the following URL in the browser and enter the resulting code after authorization'
       puts url
       code = gets
       credentials = authorizer.get_and_store_credentials_from_code(

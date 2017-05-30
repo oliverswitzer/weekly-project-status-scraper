@@ -7,7 +7,7 @@ class GoogleDriveService
   APPLICATION_NAME = 'Drive API Ruby Quickstart'
   CLIENT_SECRETS_PATH = File.join(Dir.home, '.credentials', 'client_secret.json')
   CREDENTIALS_PATH = File.join(Dir.home, '.credentials', 'drive-ruby-quickstart.yaml')
-  SCOPE = Google::Apis::DriveV3::AUTH_DRIVE_READONLY
+  SCOPE = Google::Apis::DriveV3::AUTH_DRIVE
 
   def initialize
     @_drive_v3_service = Google::Apis::DriveV3::DriveService.new
@@ -16,6 +16,10 @@ class GoogleDriveService
 
   def list_files(*params)
     @_drive_v3_service.list_files(*params)
+  end
+
+  def update_file(*params)
+    @_drive_v3_service.update_file(*params)
   end
 
   def export_file(*args)

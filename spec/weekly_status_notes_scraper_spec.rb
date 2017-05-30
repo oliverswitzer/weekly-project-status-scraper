@@ -4,6 +4,7 @@ require 'rspec/mocks'
 require_relative '../src/weekly_status_notes_scraper'
 require_relative '../src/google_drive_service'
 require_relative '../src/project_status_parser'
+require_relative '../helpers/file_path_helper'
 
 class FileListFake < Struct.new(:files)
 end
@@ -12,11 +13,10 @@ class FileFake < Struct.new(:id, :name)
 end
 
 describe WeeklyStatusNotesScraper do
+  include FilePathHelper
+
   let(:google_drive_service) { instance_double(GoogleDriveService) }
   let(:project_status_parser) { instance_double(ProjectStatusParser)}
-  let(:weekly_status_notes_csv_path) do
-    File.expand_path('../../', __FILE__) + '/tmp/weekly_status_notes.csv'
-  end
 
   let(:subject) do
     WeeklyStatusNotesScraper.new(google_drive_service, project_status_parser)

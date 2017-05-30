@@ -1,3 +1,4 @@
 .idea/*
 report.xml
 tmp/
+.DS_Store
